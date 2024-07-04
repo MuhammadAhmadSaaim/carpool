@@ -19,7 +19,7 @@ const SplashScreen = () => {
                 }
             ).start(() => {
                 setTimeout(() => {
-                    navigation.replace('LoginScreen');
+                    navigation.replace('OnboardingScreen1');
                 }, 1000);
             });
         };

@@ -10,7 +10,7 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <Text>
-                OTP Verification
+                Home
             </Text>
         </View>
     );
