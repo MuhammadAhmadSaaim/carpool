@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Icon } from 'react-native-elements';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from "../utils/colors";
 
-const DriverCard = ({ source, name, from, to, amount, carTypeIcon }) => {
+const DriverCard = ({ source, name, from, to, amount, carTypeIcon, seatsAvailable }) => {
     return (
         <View style={styles.card}>
             <Image source={source} style={styles.image} />
@@ -12,6 +13,10 @@ const DriverCard = ({ source, name, from, to, amount, carTypeIcon }) => {
                 <View>
                     <Text style={styles.route}>{`To: ${from}`}</Text>
                     <Text style={styles.route}>{`From: ${to}`}</Text>
+                </View>
+                <View style={styles.seatsContainer}>
+                    <Text style={styles.seats}>Available Seats: {seatsAvailable} </Text>
+                    <Ionicons name="person-outline" size={14} color={colors.secondary} />
                 </View>
                 <Text style={styles.amount}>Ride Amount: <Text style={styles.amountValue}>${amount}</Text></Text>
             </View>
@@ -64,6 +69,15 @@ const styles = StyleSheet.create({
     amountValue: {
         fontWeight: 'bold',
         color: colors.primary,
+    },
+    seatsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    seats: {
+        fontSize: 14,
+        color: '#555',
     },
     iconContainer: {
         padding: 5,

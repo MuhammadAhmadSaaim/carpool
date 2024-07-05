@@ -49,6 +49,7 @@ export default function SearchRideScreen() {
                         to='160 Broklyn Botanic'
                         amount='12'
                         carTypeIcon='car'
+                        seatsAvailable={3}
                     />
                     <DriverCard
                         source={require("../assets/profileInfo.png")}
@@ -56,7 +57,9 @@ export default function SearchRideScreen() {
                         from='2464 Royal Mint'
                         to='160 Broklyn Botanic'
                         amount='12'
-                        carTypeIcon='motorcycle' />
+                        carTypeIcon='motorcycle'
+                        seatsAvailable={1}
+                    />
                 </View>
             </ScrollView>
         </View>
