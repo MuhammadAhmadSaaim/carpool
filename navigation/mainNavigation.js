@@ -11,6 +11,7 @@ import HomeScreen from "../screens/homeScreen";
 import OnboardingScreen1 from "../screens/onboardingScreens/onboardingScreen1";
 import OnboardingScreen2 from "../screens/onboardingScreens/onboardingScreen2";
 import OnboardingScreen3 from "../screens/onboardingScreens/onBoardingScreen3";
+import AddPost from "../screens/addPost";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,7 @@ export default function MainStackNavigator() {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName="SplashScreen"
+                initialRouteName="AddPost"
             >
                 <Stack.Screen name="SplashScreen" component={OnboardingScreen1} />
                 <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
@@ -37,6 +38,7 @@ export default function MainStackNavigator() {
                 <Stack.Screen name="ForgetPasswordScreen2" component={ForgetPasswordScreen2} />
                 <Stack.Screen name="AccountVerificationScreen" component={AccountVerificationScreen} />
                 <Stack.Screen name="HomeScreen" component={HomeScreen} />
+                <Stack.Screen name="AddPost" component={AddPost} />
             </Stack.Navigator>
         </NavigationContainer>
     );
