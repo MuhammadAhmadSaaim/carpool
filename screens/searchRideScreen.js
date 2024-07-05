@@ -17,7 +17,7 @@ export default function SearchRideScreen() {
 
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <SizedBox height={20} />
                     <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: "800", alignSelf: "center" }}>
@@ -43,7 +43,7 @@ export default function SearchRideScreen() {
                     </Text>
                     <SizedBox height={20} />
                     <DriverCard
-                        source={require("../assets/find.png")}
+                        source={require("../assets/boyPic.png")}
                         name='Andrea Gomes'
                         from='2464 Royal Mint'
                         to='160 Broklyn Botanic'
@@ -52,7 +52,7 @@ export default function SearchRideScreen() {
                         seatsAvailable={3}
                     />
                     <DriverCard
-                        source={require("../assets/profileInfo.png")}
+                        source={require("../assets/girlPic.png")}
                         name='Andrea Gomes'
                         from='2464 Royal Mint'
                         to='160 Broklyn Botanic'

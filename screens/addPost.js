@@ -27,12 +27,13 @@ export default function AddPost() {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: "center" }}>
                     <ImageCard source={require("../assets/bike.png")} width={50} height={50} size={75} />
                     <ImageCard source={require("../assets/hatchback.png")} width={60} height={60} size={75} />
-                    <ImageCard source={require("../assets/sedan.png")} width={70} height={70} size={75} />
+                    <ImageCard source={require("../assets/sedan.png")} width={60} height={60} size={75} color={colors.primary} />
                     <ImageCard source={require("../assets/jeep.png")} width={60} height={60} size={75} />
                 </View>
             </View>
             <View>
-                <CustomSolidButton text="Create" backgroundColor={colors.primary} textColor={colors.background} />
+                <CustomSolidButton text="Create" backgroundColor={colors.tertiary} textColor={colors.background} />
+
             </View>
         </View>
     );

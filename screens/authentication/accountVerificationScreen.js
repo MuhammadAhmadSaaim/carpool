@@ -13,7 +13,7 @@ const AccountVerificationScreen = () => {
     const next = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: 'HomeScreen' }],
+            routes: [{ name: 'BottomTabNavigator' }],
         })
     }
 

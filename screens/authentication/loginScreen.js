@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import colors from "../../utils/colors";
 import TitleInputField from "../../components/titledTextInputField";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomSolidButton from "../../components/customSolidButton";
 import SizedBox from "../../components/SizedBox";
 import mail from "../../assets/mail.png";
@@ -15,18 +14,13 @@ const LoginScreen = () => {
     const next = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: 'HomeScreen' }],
+            routes: [{ name: 'BottomTabNavigator' }],
         })
     }
 
     return (
         <View style={styles.background}>
             <View>
-                <View style={styles.topRectangle}>
-                    <Image source={require("../../assets/logoWhite.png")} style={{ width: 180, height: 180, resizeMode: "contain" }} />
-                </View>
-
-
                 <View style={{ paddingHorizontal: 15, }}>
                     <SizedBox height={30} />
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -73,7 +67,7 @@ const styles = StyleSheet.create({
     },
     topRectangle: {
         width: '100%',
-        height: Dimensions.get("window").height / 6,
+        height: 55,
         backgroundColor: colors.primary,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
