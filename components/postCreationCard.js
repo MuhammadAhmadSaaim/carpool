@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/MaterialIcons';
 
 const PostCreationCard = () => {
     return (
@@ -16,11 +17,16 @@ const PostCreationCard = () => {
             </View>
             <View style={styles.rowContainer}>
                 <View style={styles.rowItem}>
+                    <Icon name="person-outline" size={20} color="#000" />
+                    <Text style={styles.text}>3</Text>
+                </View>
+
+                <View style={styles.rowItem}>
                     <Icon name="calendar-outline" size={20} color="#000" />
                     <Text style={styles.text}>Today</Text>
                 </View>
                 <View style={styles.rowItem}>
-                    <Icon name="person-outline" size={20} color="#000" />
+                    <Icon2 name="attach-money" size={20} color="#000" />
                     <Text style={styles.text}>3</Text>
                 </View>
             </View>

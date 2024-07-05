@@ -24,7 +24,7 @@ export default function AddPost() {
                 <SizedBox height={20} />
                 <PostCreationCard />
                 <SizedBox height={20} />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10, alignItems: "center" }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: "center" }}>
                     <ImageCard source={require("../assets/bike.png")} width={50} height={50} size={75} />
                     <ImageCard source={require("../assets/hatchback.png")} width={60} height={60} size={75} />
                     <ImageCard source={require("../assets/sedan.png")} width={70} height={70} size={75} />
