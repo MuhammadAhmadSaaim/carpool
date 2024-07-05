@@ -49,9 +49,6 @@ const SignupScreen = () => {
                 <TitleInputField titleColor={colors.background} title="Phone Number" placeholder="E.g. +92 3012345678" image={phone} />
                 <TitleInputField titleColor={colors.background} title="Password" placeholder="E.g. password" image={pass} />
                 <SizedBox height={20} />
-                <HorizontalLine color={colors.background} />
-                <SizedBox height={30} />
-
                 <CustomSolidButton backgroundColor={colors.background} text="Continue" textColor={colors.textBlack} onPress={next} />
                 <SizedBox height={20} />
                 <CustomSolidButton backgroundColor={colors.textGrey} text="Back To Sign In" textColor={colors.background} onPress={goBack} />
