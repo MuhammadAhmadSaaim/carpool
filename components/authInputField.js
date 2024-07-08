@@ -2,19 +2,33 @@ import React from 'react';
 import { View, Text, TextInput, Image, StyleSheet } from 'react-native';
 import colors from "../utils/colors";
 
-const TitleInputField = ({ title, titleColor, placeholder, image, secureTextEntry }) => {
+const AuthInputField = ({
+    title,
+    titleColor = colors.primary,
+    placeholder,
+    image,
+    secureTextEntry,
+    value,
+    onChangeText,
+    onBlur,
+    error
+}) => {
     return (
         <View>
             <Text style={[styles.inputTitle, { color: titleColor }]}>{title}</Text>
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, error && styles.inputError]}>
                 <TextInput
                     style={styles.inputText}
                     placeholder={placeholder}
-                    secureTextEntry={secureTextEntry} // Conditionally apply secureTextEntry
-                    autoCapitalize="none" // Ensure no auto capitalization for passwords
+                    secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={onChangeText}
+                    onBlur={onBlur}
                 />
                 <Image style={styles.socialButtonImage} source={image} />
             </View>
+            {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
     );
 };
@@ -42,11 +56,20 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         borderWidth: 1,
     },
+    inputError: {
+        borderColor: 'red',
+    },
     socialButtonImage: {
         width: 18,
         height: 18,
         resizeMode: 'contain',
     },
+    errorText: {
+        fontSize: 10,
+        color: 'red',
+        position: "relative",
+        top: -15
+    },
 });
 
-export default TitleInputField;
+export default AuthInputField;

@@ -1,12 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import colors from "../../utils/colors";
-import TitleInputField from "../../components/titledTextInputField";
+import AuthInputField from "../../components/authInputField"
 import CustomSolidButton from "../../components/customSolidButton";
 import SizedBox from "../../components/SizedBox";
 import mail from "../../assets/mail.png";
 import pass from "../../assets/password.png";
-import { useNavigation } from "@react-navigation/native";
+
+// Validation schema
+const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+});
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -15,69 +23,111 @@ const LoginScreen = () => {
         navigation.reset({
             index: 0,
             routes: [{ name: 'BottomTabNavigator' }],
-        })
-    }
+        });
+    };
 
     return (
-        <View style={styles.background}>
-            <View>
-                <View style={{ paddingHorizontal: 15, }}>
-                    <SizedBox height={30} />
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <View>
-                            <View>
-                                <SizedBox height={30} />
-                                <Text style={{ color: colors.tertiary, fontSize: 24, fontWeight: "400" }}>
-                                    Book Your
-                                </Text>
+        <Formik
+            initialValues={{ email: '', password: '' }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+                // Handle form submission
+                next();
+            }}
+        >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                <View style={styles.background}>
+                    <View>
+                        <View style={{ paddingHorizontal: 15 }}>
+                            <SizedBox height={30} />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View>
+                                    <View>
+                                        <SizedBox height={30} />
+                                        <Text style={{ color: colors.tertiary, fontSize: 24, fontWeight: '400' }}>
+                                            Book Your
+                                        </Text>
+                                    </View>
+                                    <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: '800' }}>
+                                        CARPOOL Now
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Image
+                                        source={require("../../assets/profileInfo.png")}
+                                        style={{ width: 150, height: 150, resizeMode: 'contain' }}
+                                    />
+                                </View>
                             </View>
-                            <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: "800" }}>CARPOOL Now</Text>
-                        </View>
-                        <View>
-                            <Image source={require("../../assets/profileInfo.png")} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+
+                            <SizedBox height={30} />
+                            <AuthInputField
+                                title="Email"
+                                placeholder="Enter your email"
+                                image={mail}
+                                secureTextEntry={false}
+                                value={values.email}
+                                onChangeText={handleChange('email')}
+                                onBlur={handleBlur('email')}
+                                error={touched.email && errors.email}
+                            />
+
+                            <AuthInputField
+                                title="Password"
+                                placeholder="Enter your password"
+                                image={pass}
+                                secureTextEntry
+                                value={values.password}
+                                onChangeText={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                error={touched.password && errors.password}
+                            />
+                            <SizedBox height={26} />
+                            <CustomSolidButton
+                                backgroundColor={colors.primary}
+                                text="Sign In"
+                                textColor={colors.background}
+                                onPress={handleSubmit}
+                            />
+                            <SizedBox height={20} />
+
+                            <Text
+                                style={{ fontSize: 16, color: colors.secondary, textAlign: 'right' }}
+                                onPress={() => navigation.navigate('ForgetPasswordScreen1')}
+                            >
+                                Forgot Password?
+                            </Text>
                         </View>
                     </View>
-
-                    <SizedBox height={30} />
-                    <TitleInputField title="Email" placeholder="Enter your email" image={mail} />
-                    <TitleInputField title="Password" placeholder="Enter your password" image={pass} />
-                    <SizedBox height={26} />
-                    <CustomSolidButton backgroundColor={colors.primary} text="Sign In" textColor={colors.background} onPress={next} />
-                    <SizedBox height={20} />
-
-                    <Text style={{ fontSize: 16, color: colors.secondary, textAlign: "right" }} onPress={() => navigation.navigate("ForgetPasswordScreen1")}>Forgot Password?</Text>
-
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 15 }}>
+                        <Text style={{ fontSize: 16, textAlign: 'center', marginRight: 4 }}>
+                            Don't have an account?
+                        </Text>
+                        <Text
+                            style={{ fontSize: 16, textAlign: 'center', color: colors.secondary, fontWeight: '500' }}
+                            onPress={() => navigation.navigate('SignupScreen')}
+                        >
+                            Sign Up
+                        </Text>
+                    </View>
                 </View>
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", paddingHorizontal: 15, }}>
-                <Text style={{ fontSize: 16, textAlign: "center", marginRight: 4 }}>Don't have an account?</Text>
-                <Text style={{ fontSize: 16, textAlign: "center", color: colors.secondary, fontWeight: "500" }} onPress={() => navigation.navigate("SignupScreen")}>Sign Up</Text>
-            </View>
-        </View>
+            )}
+        </Formik>
     );
 };
 
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        justifyContent: "space-between",
+        justifyContent: 'space-between',
         paddingTop: 30,
         paddingBottom: 20,
         backgroundColor: colors.background,
     },
-    topRectangle: {
-        width: '100%',
-        height: 55,
-        backgroundColor: colors.primary,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        color: colors.background,
-        fontWeight: 'bold',
+    errorText: {
+        fontSize: 14,
+        color: 'red',
+        marginTop: 5,
     },
 });
 

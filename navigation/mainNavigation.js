@@ -22,8 +22,8 @@ export default function MainStackNavigator() {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName="SplashScreen">
-                <Stack.Screen name="SplashScreen" component={SplashScreen} />
+                initialRouteName="LoginScreen">
+                <Stack.Screen name="SplashScreen" component={SignupScreen} />
                 <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
                 <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} options={{
                     gestureEnabled: true,

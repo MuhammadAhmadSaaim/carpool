@@ -1,57 +1,164 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import colors from "../../utils/colors";
 import SizedBox from "../../components/SizedBox";
 import TitleInputField from "../../components/titledTextInputField";
+import AuthInputField from "../../components/authInputField"
 import CustomSolidButton from "../../components/customSolidButton";
 import HorizontalLine from "../../components/horizontalLine";
 import mail from "../../assets/mail.png";
 import pass from "../../assets/password.png";
-import phone from "../../assets/messagePurple.png";
 import user from "../../assets/userPurple.png";
 import { useNavigation } from "@react-navigation/native";
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const SignupScreen = () => {
     const navigation = useNavigation();
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [formattedDate, setFormattedDate] = useState("");
+
+    const validationSchema = Yup.object().shape({
+        firstName: Yup.string().required('First Name is required'),
+        lastName: Yup.string().required('Last Name is required'),
+        email: Yup.string().email('Invalid email').required('Email is required'),
+        password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+        dateOfBirth: Yup.date().required('Date of Birth is required')
+    });
 
     const goBack = () => {
         navigation.goBack();
-    }
+    };
 
     const next = () => {
         navigation.navigate("AccountVerificationScreen");
-    }
+    };
+
+    const onChange = (event, selectedDate, setFieldValue) => {
+        const currentDate = selectedDate || date;
+        setShowDatePicker(false);
+        setDate(currentDate);
+        setFormattedDate(currentDate.toLocaleDateString());
+        setFieldValue('dateOfBirth', currentDate);
+    };
 
     return (
         <View style={styles.background}>
-            <View style={{ paddingHorizontal: 15, }}>
+            <View style={{ paddingHorizontal: 15 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <View>
-                        <View>
-                            <SizedBox height={35} />
-                            <Text style={{ color: colors.tertiary, fontSize: 24, fontWeight: "400" }}>
-                                Hi There
-                            </Text>
-                        </View>
-                        <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: "800" }}>Let's Get Start</Text>
+                        <SizedBox height={35} />
+                        <Text style={{ color: colors.tertiary, fontSize: 24, fontWeight: "400" }}>
+                            Hi There
+                        </Text>
+                        <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: "800" }}>
+                            Let's Get Start
+                        </Text>
                     </View>
-                    <View>
-                        <Image source={require("../../assets/navigator.png")} style={{ width: 150, height: 150, resizeMode: "contain" }} />
-                    </View>
+                    <Image source={require("../../assets/navigator.png")} style={{ width: 150, height: 150, resizeMode: "contain" }} />
                 </View>
-                <SizedBox height={30} />
+                <SizedBox height={20} />
             </View>
             <View style={styles.bottomRectangle}>
-                <SizedBox height={30} />
-                <TitleInputField titleColor={colors.background} title="Full Name" placeholder="E.g. Ali Nawaz" image={user} />
-                <TitleInputField titleColor={colors.background} title="Email" placeholder="E.g. example12@gmail.com" image={mail} />
-                <TitleInputField titleColor={colors.background} title="Phone Number" placeholder="E.g. +92 3012345678" image={phone} />
-                <TitleInputField titleColor={colors.background} title="Password" placeholder="E.g. password" image={pass} />
-                <SizedBox height={20} />
-                <CustomSolidButton backgroundColor={colors.background} text="Continue" textColor={colors.textBlack} onPress={next} />
-                <SizedBox height={20} />
-                <CustomSolidButton backgroundColor={colors.textGrey} text="Back To Sign In" textColor={colors.background} onPress={goBack} />
+                <Formik
+                    initialValues={{ firstName: '', lastName: '', email: '', password: '', dateOfBirth: '' }}
+                    validationSchema={validationSchema}
+                    onSubmit={values => {
+                        console.log(values);
+                        next();
+                    }}
+                >
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
+                        <>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                <SizedBox height={10} />
+                                <AuthInputField
+                                    titleColor={colors.background}
+                                    title="First Name"
+                                    placeholder="E.g. Ali "
+                                    image={user}
+                                    onChangeText={handleChange('firstName')}
+                                    onBlur={handleBlur('firstName')}
+                                    value={values.firstName}
+                                />
+                                {touched.firstName && errors.firstName && <Text style={styles.errorText}>{errors.firstName}</Text>}
+
+                                <AuthInputField
+                                    titleColor={colors.background}
+                                    title="Last Name"
+                                    placeholder="E.g. Nawaz"
+                                    image={user}
+                                    onChangeText={handleChange('lastName')}
+                                    onBlur={handleBlur('lastName')}
+                                    value={values.lastName}
+                                />
+                                {touched.lastName && errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
+
+                                <AuthInputField
+                                    titleColor={colors.background}
+                                    title="Email"
+                                    placeholder="E.g. example12@gmail.com"
+                                    image={mail}
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
+                                <AuthInputField
+                                    titleColor={colors.background}
+                                    title="Password"
+                                    placeholder="E.g. password"
+                                    image={pass}
+                                    secureTextEntry
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                />
+                                {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+
+                                <Text style={[styles.inputTitle, { color: colors.background }]}>Date of Birth</Text>
+                                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                        <Text style={styles.datePickerButtonText}>
+                                            {formattedDate ? formattedDate : "E.g. 26/08/2002"}
+                                        </Text>
+                                        <Image style={styles.socialButtonImage} source={require("../../assets/down.png")} />
+                                    </View>
+                                </TouchableOpacity>
+                                {touched.dateOfBirth && errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
+                                {showDatePicker && (
+                                    <DateTimePicker
+                                        testID="dateTimePicker"
+                                        value={date}
+                                        mode="date"
+                                        display="default"
+                                        onChange={(event, selectedDate) => onChange(event, selectedDate, setFieldValue)}
+                                    />
+                                )}
+                            </ScrollView>
+                            <HorizontalLine color={colors.background} />
+                            <View>
+                                <SizedBox height={20} />
+                                <CustomSolidButton
+                                    backgroundColor={colors.background}
+                                    text="Continue"
+                                    textColor={colors.textBlack}
+                                    onPress={handleSubmit}
+                                />
+                                <SizedBox height={10} />
+                                <CustomSolidButton
+                                    backgroundColor={colors.textGrey}
+                                    text="Back To Sign In"
+                                    textColor={colors.background}
+                                    onPress={goBack}
+                                />
+                            </View>
+                        </>
+                    )}
+                </Formik>
             </View>
         </View>
     );
@@ -62,17 +169,44 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "space-between",
         paddingTop: 25,
-        paddingBottom: 20,
         backgroundColor: colors.background,
     },
     bottomRectangle: {
+        flex: 1,
         width: '100%',
-        height: Dimensions.get("window").height,
         backgroundColor: colors.primary,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        justifyContent: 'flex-start',
         padding: 15,
+        paddingBottom: 10,
+    },
+    inputTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginBottom: 10,
+    },
+    datePickerButton: {
+        backgroundColor: colors.background,
+        height: 55,
+        padding: 15,
+        borderRadius: 10,
+        textAlign: "left",
+        justifyContent: 'center', // Center the text vertically
+    },
+    datePickerButtonText: {
+        color: colors.tertiary,
+        fontSize: 14,
+    },
+    socialButtonImage: {
+        width: 18,
+        height: 18,
+        resizeMode: 'contain',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 5,
+        marginBottom: 10,
     },
 });
 
