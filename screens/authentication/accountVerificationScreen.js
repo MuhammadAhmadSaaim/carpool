@@ -35,8 +35,6 @@ const AccountVerificationScreen = () => {
                     <View style={{ height: 50, width: 50, backgroundColor: colors.tertiary, borderRadius: 10 }}></View>
                     <View style={{ height: 50, width: 50, backgroundColor: colors.tertiary, borderRadius: 10 }}></View>
                     <View style={{ height: 50, width: 50, backgroundColor: colors.tertiary, borderRadius: 10 }}></View>
-                    <View style={{ height: 50, width: 50, backgroundColor: colors.tertiary, borderRadius: 10 }}></View>
-                    <View style={{ height: 50, width: 50, backgroundColor: colors.tertiary, borderRadius: 10 }}></View>
                 </View>
                 <SizedBox height={20} />
                 <Text style={{ fontSize: 16, color: colors.secondary, textAlign: "center" }}>Resend Code</Text>

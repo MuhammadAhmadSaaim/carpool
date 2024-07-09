@@ -12,6 +12,7 @@ import OnboardingScreen2 from "../screens/onboardingScreens/onboardingScreen2";
 import OnboardingScreen3 from "../screens/onboardingScreens/onBoardingScreen3";
 import ChatScreen from "../screens/chatScreen";
 import BottomTabNavigator from "../navigation/bottomNavigation";
+import ChangePasswordScreen from "../screens/authentication/changePassword";
 
 
 const Stack = createStackNavigator();
@@ -22,8 +23,8 @@ export default function MainStackNavigator() {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName="LoginScreen">
-                <Stack.Screen name="SplashScreen" component={SignupScreen} />
+                initialRouteName="SplashScreen">
+                <Stack.Screen name="SplashScreen" component={SplashScreen} />
                 <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
                 <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} options={{
                     gestureEnabled: true,
@@ -39,6 +40,7 @@ export default function MainStackNavigator() {
                 <Stack.Screen name="ForgetPasswordScreen2" component={ForgetPasswordScreen2} />
                 <Stack.Screen name="AccountVerificationScreen" component={AccountVerificationScreen} />
                 <Stack.Screen name="ChatScreen" component={ChatScreen} />
+                <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
                 <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
             </Stack.Navigator>
         </NavigationContainer>

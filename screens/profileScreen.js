@@ -1,19 +1,24 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import TitleInputField from "../components/titledTextInputField";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import colors from "../utils/colors";
-import HorizontalLine from "../components/horizontalLine";
 import SizedBox from "../components/SizedBox";
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from "../screens/authentication/authToken"
+
 
 const ProfileScreen = () => {
     const navigation = useNavigation();
+    const { user, clearToken } = useAuth();
 
     const next = () => {
+        clearToken();
         navigation.reset({
             index: 0,
             routes: [{ name: 'LoginScreen' }],
         })
+    }
+    const passChange = () => {
+        navigation.navigate('ChangePasswordScreen');
     }
 
     return (
@@ -22,40 +27,45 @@ const ProfileScreen = () => {
                 <Text style={{ color: colors.secondary, fontSize: 30, fontWeight: "800", alignSelf: "left" }}>
                     Profile
                 </Text>
-                <TouchableOpacity onPress={next}>
-                    <Image
-                        source={require("../assets/logout.png")}
-                        style={{ width: 30, height: 30 }}
-                    />
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", }}>
+                    <TouchableOpacity onPress={passChange}>
+                        <Image
+                            source={require("../assets/settingsPurple.png")}
+                            style={{ width: 30, height: 30 }}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={next} >
+                        <Image
+                            source={require("../assets/logout.png")}
+                            style={{ width: 30, height: 30, marginLeft: 10 }}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
             <SizedBox height={20} />
             <Image
-                source={require("../assets/girlPic.png")}
+                source={require("../assets/boyPic.png")}
                 style={styles.profileImage}
             />
             <SizedBox height={20} />
             <Text style={{ color: colors.tertiary, fontSize: 30, fontWeight: 500, textAlign: "center" }}>
-                John Doe
+                {user.firstName} {user.lastName}
             </Text>
             <SizedBox height={20} />
-            <View style={{ backgroundColor: colors.primary, borderRadius: 10, padding: 15, flex: 1 }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text style={{ color: colors.background, fontSize: 16 }}>
-                        johndoe@gmail.com
-                    </Text>
-                    <Text style={{ color: colors.background, fontSize: 16 }}>
-                        +92 3012345678
-                    </Text>
-                </View>
+            <ScrollView style={{ backgroundColor: colors.primary, borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 15, flex: 1 }}>
+
+                <Text style={{ color: colors.background, fontSize: 14, textAlign: "center" }}>
+                    {user.email}
+                </Text>
+
                 <SizedBox height={20} />
                 <Text style={{ color: colors.background, fontSize: 16, fontWeight: "400" }}>
                     About
                 </Text>
                 <SizedBox height={5} />
-                <View style={{ backgroundColor: colors.background, padding: 15, borderRadius: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text>
-                        Hi, I'm Jane! I've been driving for carpool services for over two years. Safety and comfort are my top priorities, and I always ensure that my car is clean and well-maintained. I enjoy meeting new people and making commutes more enjoyable for everyone. When I'm not driving, I love hiking, reading, and exploring new coffee shops in the city. Looking forward to sharing a ride with you!
+                <View style={{ borderRadius: 10, flexDirection: "row", justifyContent: "space-between", }}>
+                    <Text style={{ color: colors.background }}>
+                        Hi, I'm Jane! I've been driving for carpool services for over two years. Safety and comfort are my top priorities.
                     </Text>
                 </View>
                 <SizedBox height={20} />
@@ -96,8 +106,8 @@ const ProfileScreen = () => {
                         <Text style={{ fontSize: 14, color: "#526270", alignSelf: "center" }}>4.7</Text>
                     </View>
                 </View>
-            </View>
-        </View>
+            </ScrollView>
+        </View >
     );
 };
 

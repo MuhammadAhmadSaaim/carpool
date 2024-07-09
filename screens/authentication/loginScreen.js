@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -9,6 +9,8 @@ import CustomSolidButton from "../../components/customSolidButton";
 import SizedBox from "../../components/SizedBox";
 import mail from "../../assets/mail.png";
 import pass from "../../assets/password.png";
+import { useAuth } from "../authentication/authToken"
+
 
 // Validation schema
 const validationSchema = Yup.object().shape({
@@ -18,22 +20,45 @@ const validationSchema = Yup.object().shape({
 
 const LoginScreen = () => {
     const navigation = useNavigation();
+    const { token, user, saveToken, saveUser } = useAuth();
 
-    const next = () => {
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'BottomTabNavigator' }],
-        });
+    const submit = async (values) => {
+        try {
+            const response = await fetch('https://carpool.qwertyexperts.com/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({ email: values.email, password: values.password }),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                saveToken(data.result.token); // Save the token
+                saveUser(data.result.user); // Save the user data
+                console.log("\nToken:", token);
+                console.log("\nData:", user);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'BottomTabNavigator' }],
+                });
+            }
+            else {
+                Alert.alert('Sign In Failed', 'An error occurred. Please try again.');
+                values.email = '';
+                values.password = '';
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            Alert.alert('Login Failed', 'An error occurred. Please try again.');
+        }
     };
 
     return (
         <Formik
             initialValues={{ email: '', password: '' }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-                // Handle form submission
-                next();
-            }}
+            onSubmit={submit}
         >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <View style={styles.background}>

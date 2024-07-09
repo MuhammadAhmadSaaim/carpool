@@ -2,9 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { View, Image, Animated } from 'react-native';
 import colors from "../utils/colors";
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from "../screens/authentication/authToken"
 
 const SplashScreen = () => {
     const navigation = useNavigation();
+    const { token } = useAuth();
+
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -17,14 +20,22 @@ const SplashScreen = () => {
                     duration: 2000,
                     useNativeDriver: true,
                 }
-            ).start(() => {
-                setTimeout(() => {
-                    navigation.replace('OnboardingScreen1');
-                }, 1000);
+            ).start(async () => {
+
+                if (!token) {
+                    setTimeout(() => {
+                        navigation.replace('OnboardingScreen1');
+                    }, 1000);
+                }
+                else {
+                    setTimeout(() => {
+                        navigation.replace('BottomTabNavigator');
+                    }, 1000);
+                }
             });
         };
         startAnimation();
-    }, [fadeAnim, navigation]);
+    }, [fadeAnim, navigation, token]);
 
     return (
         <View style={{ backgroundColor: colors.primary, flex: 1, justifyContent: "center" }}>

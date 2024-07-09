@@ -18,6 +18,8 @@ const ForgetPasswordScreen1 = () => {
         navigation.navigate("ForgetPasswordScreen2");
     }
 
+
+
     return (
         <View style={styles.container}>
             <View>

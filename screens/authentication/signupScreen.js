@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import colors from "../../utils/colors";
 import SizedBox from "../../components/SizedBox";
-import TitleInputField from "../../components/titledTextInputField";
 import AuthInputField from "../../components/authInputField"
 import CustomSolidButton from "../../components/customSolidButton";
 import HorizontalLine from "../../components/horizontalLine";
@@ -32,16 +31,46 @@ const SignupScreen = () => {
         navigation.goBack();
     };
 
-    const next = () => {
-        navigation.navigate("AccountVerificationScreen");
-    };
 
     const onChange = (event, selectedDate, setFieldValue) => {
         const currentDate = selectedDate || date;
         setShowDatePicker(false);
         setDate(currentDate);
-        setFormattedDate(currentDate.toLocaleDateString());
-        setFieldValue('dateOfBirth', currentDate);
+        // Format date to mm-dd-yyyy
+        const formatted = `${currentDate.getMonth() + 1}-${currentDate.getDate()}-${currentDate.getFullYear()}`;
+        setFormattedDate(formatted);
+        setFieldValue('dateOfBirth', formatted); // Update Formik field value
+    };
+
+    const handleSubmit = async (values) => {
+        try {
+            const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
+            const response = await fetch('https://carpool.qwertyexperts.com/api/auth/sign-up', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    email: values.email,
+                    password: values.password,
+                    dob: formattedDate
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                navigation.navigate("AccountVerificationScreen");
+            }
+            else {
+                Alert.alert('Sign Up Failed', 'An error occurred. Please try again.');
+                values.email = '';
+                values.password = '';
+            }
+        } catch (error) {
+            console.error('Error signing up:', error);
+            Alert.alert('Sign Up Failed', 'An error occurred. Please try again.');
+        }
     };
 
     return (
@@ -65,10 +94,7 @@ const SignupScreen = () => {
                 <Formik
                     initialValues={{ firstName: '', lastName: '', email: '', password: '', dateOfBirth: '' }}
                     validationSchema={validationSchema}
-                    onSubmit={values => {
-                        console.log(values);
-                        next();
-                    }}
+                    onSubmit={handleSubmit}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
                         <>
