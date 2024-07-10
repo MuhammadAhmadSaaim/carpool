@@ -1,24 +1,28 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import colors from "../utils/colors";
 import SizedBox from "../components/SizedBox";
 
-const RequestCard = ({ name, source, to, from, persons }) => {
+
+const RequestCard = ({ name, source, to, from, persons, accept, reject }) => {
     return (
         <View style={styles.card}>
             <SizedBox height={10} />
             <Image source={source} style={styles.image} />
             <Text style={styles.name}>{name}</Text>
-            <Text style={{ textAlign: 'center', }}>{to} {"->"} {from}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-evenly", paddingHorizontal: 10 }}>
+                <Text style={{ textAlign: 'center', }}>{from} </Text>
+                <Text style={{ textAlign: 'center', }}>{"->"}</Text>
+                <Text style={{ textAlign: 'center', }}> {to}</Text>
+            </View>
             <Text style={{ textAlign: 'center', }}>Passengers: {persons}</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.acceptButton}>
+                <TouchableOpacity style={styles.acceptButton} onPress={accept}>
                     <Text style={{ color: colors.background, padding: 10, textAlign: "center" }}>Accept</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.rejectButton}>
+                <TouchableOpacity style={styles.rejectButton} onPress={reject}>
                     <Text style={{ color: colors.background, padding: 10, textAlign: "center" }}>Reject</Text>
                 </TouchableOpacity>
-
             </View>
         </View>
     );

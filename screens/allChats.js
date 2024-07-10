@@ -8,7 +8,7 @@ import HorizontalLine from "../components/horizontalLine";
 import SizedBox from "../components/SizedBox";
 import { useNavigation } from '@react-navigation/native';
 
-const AllChats = () => {
+const AllChats = ({ postId }) => {
     const navigation = useNavigation();
 
     const openChat = () => {
@@ -21,9 +21,9 @@ const AllChats = () => {
             <HorizontalLine color={colors.secondary} />
             <SizedBox height={10} />
             <ScrollView>
-                <ChatCard name="John Doe" text="Hello, how are you?" onPress={openChat} />
-                <ChatCard name="Jane Smith" text="I'm good, thank you!" onPress={openChat} />
-                <ChatCard name="Alex Johnson" text="What about you?" onPress={openChat} />
+                <ChatCard name="John Doe" onPress={openChat} />
+                <ChatCard name="Jane Smith" onPress={openChat} />
+                <ChatCard name={postId} onPress={openChat} />
             </ScrollView>
         </View>
     );

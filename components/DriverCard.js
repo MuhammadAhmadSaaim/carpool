@@ -1,33 +1,49 @@
+// DriverCard.js
+
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from "../utils/colors";
 
-const DriverCard = ({ source, name, from, to, amount, carTypeIcon, seatsAvailable }) => {
+const images = {
+    bike: require("../assets/bike.png"),
+    hatchback: require("../assets/hatchback.png"),
+    sedan: require("../assets/sedan.png"),
+    jeep: require("../assets/jeep.png"),
+    car: require("../assets/sedan.png"),
+    cycle: require("../assets/bike.png"),
+    bus: require("../assets/jeep.png"),
+};
+
+const DriverCard = ({ name, from, to, vehicleType, departureTime, arrivalTime, totalSeats, availableSeats, status, onPress }) => {
+    const vehicleImage = images[vehicleType];
+
     return (
-        <View style={styles.card}>
-            <Image source={source} style={styles.image} />
+        <TouchableOpacity style={styles.card} onPress={() => onPress({ name, from, to, vehicleType, departureTime, arrivalTime, totalSeats, availableSeats, status })}>
             <View style={styles.details}>
                 <Text style={styles.name}>{name}</Text>
-                <View>
-                    <Text style={styles.route}>{`To: ${from}`}</Text>
-                    <Text style={styles.route}>{`From: ${to}`}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={styles.route}>{`From: ${from}`}</Text>
+                    <Text style={[styles.route, { textAlign: "center" }]}>{"->"}</Text>
+                    <Text style={styles.route}>{`To: ${to}`}</Text>
                 </View>
-                <View style={styles.seatsContainer}>
-                    <Text style={styles.seats}>Available Seats: {seatsAvailable} </Text>
-                    <Ionicons name="person-outline" size={14} color={colors.secondary} />
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={styles.time}>{`Departure: ${departureTime}`}</Text>
+                    <Text style={[styles.route, { textAlign: "center" }]}>{"->"}</Text>
+                    <Text style={styles.time}>{`Arrival: ${arrivalTime}`}</Text>
                 </View>
-                <Text style={styles.amount}>Ride Amount: <Text style={styles.amountValue}>${amount}</Text></Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View>
+                        <View style={styles.seatsContainer}>
+                            <Text style={styles.seats}>{`Available Seats: ${availableSeats} / ${totalSeats}`}</Text>
+                            <Ionicons name="person-outline" size={14} color={colors.secondary} />
+                        </View>
+                        <Text style={styles.status}>Status: <Text style={styles.statusValue}>{status}</Text></Text>
+                    </View>
+                    <Image source={vehicleImage} style={styles.vehicleImage} />
+                </View>
             </View>
-            <Icon
-                name={carTypeIcon}
-                type='font-awesome'
-                size={24}
-                color={colors.tertiary}
-                containerStyle={styles.iconContainer}
-            />
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -43,13 +59,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 4,
-        marginBottom: 10,
-    },
-    image: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginRight: 10,
+        marginBottom: 15,
     },
     details: {
         flex: 1,
@@ -62,13 +72,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#555',
     },
-    amount: {
+    time: {
         fontSize: 14,
-        marginTop: 5,
-    },
-    amountValue: {
-        fontWeight: 'bold',
-        color: colors.primary,
+        color: '#555',
     },
     seatsContainer: {
         flexDirection: 'row',
@@ -78,9 +84,21 @@ const styles = StyleSheet.create({
     seats: {
         fontSize: 14,
         color: '#555',
+        marginRight: 5,
     },
-    iconContainer: {
-        padding: 5,
+    status: {
+        fontSize: 14,
+        marginTop: 5,
+    },
+    statusValue: {
+        fontWeight: 'bold',
+        color: colors.primary,
+    },
+    vehicleImage: {
+        width: 40,
+        height: 40,
+        marginTop: 5,
+        resizeMode: 'contain',
     },
 });
 

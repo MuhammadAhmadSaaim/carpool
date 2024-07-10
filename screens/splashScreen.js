@@ -6,10 +6,11 @@ import { useAuth } from "../screens/authentication/authToken"
 
 const SplashScreen = () => {
     const navigation = useNavigation();
-    const { token } = useAuth();
+    const { token, loading } = useAuth();
 
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+
 
     useEffect(() => {
         const startAnimation = () => {
@@ -22,20 +23,22 @@ const SplashScreen = () => {
                 }
             ).start(async () => {
 
-                if (!token) {
-                    setTimeout(() => {
-                        navigation.replace('OnboardingScreen1');
-                    }, 1000);
-                }
-                else {
-                    setTimeout(() => {
-                        navigation.replace('BottomTabNavigator');
-                    }, 1000);
+                if (!loading) {
+                    if (!token) {
+                        setTimeout(() => {
+                            navigation.replace('OnboardingScreen1');
+                        }, 1000);
+                    }
+                    else {
+                        setTimeout(() => {
+                            navigation.replace('BottomTabNavigator');
+                        }, 1000);
+                    }
                 }
             });
         };
         startAnimation();
-    }, [fadeAnim, navigation, token]);
+    }, [fadeAnim, navigation, token, loading]);
 
     return (
         <View style={{ backgroundColor: colors.primary, flex: 1, justifyContent: "center" }}>
