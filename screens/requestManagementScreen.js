@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import RequestCard from "../components/requestCard";
 import { useNavigation } from '@react-navigation/native';
 import colors from "../utils/colors";
@@ -8,7 +8,7 @@ import { useAuth } from "../screens/authentication/authToken";
 import { useState, useEffect } from 'react';
 
 const RequestManagementScreen = () => {
-    const { user, token } = useAuth();
+    const { user, token, savePostID } = useAuth();
     const [requests, setRequests] = useState([]);
     const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
@@ -48,16 +48,16 @@ const RequestManagementScreen = () => {
                 body: JSON.stringify({ status: 'Booked' }),
             });
             if (response.ok) {
+                console.log("ALi ko accept krna hai ", requestId);
                 Alert.alert('Success', 'Request accepted successfully.');
-                navigation.navigate('AllChats', { postId: requestId });
+                navigation.navigate('AllChat');
             } else {
                 Alert.alert('Error', 'An error occurred while accepting the request. Please try again later.');
             }
         } catch (error) {
-            Alert.alert('Error', error);
+            Alert.alert('Error', error.message);
         }
     };
-
 
     const handleReject = () => {
         // Logic for rejecting the request
@@ -66,27 +66,31 @@ const RequestManagementScreen = () => {
 
     return (
         <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Carpool Requests</Text>
-                <Text style={styles.subtitle}>
-                    Please review the details below and choose to accept or reject the request.
-                </Text>
-                <HorizontalLine color={colors.tertiary} />
-                {requests.map((request) => {
-                    if (request.post.status === "Available" && request.post.userId === user._id)
-                        return (
-                            <RequestCard
-                                key={request.post._id}
-                                name={request.from.firstName + " " + request.from.lastName}
-                                source={require("../assets/boyPic.png")}
-                                to={request.post.to}
-                                from={request.post.from}
-                                persons={request.seats}
-                                accept={() => handleAccept(request.post._id)}
-                                reject={() => handleReject()}
-                            />);
-                })}
-            </ScrollView>
+            {loading ? (
+                <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={styles.title}>Carpool Requests</Text>
+                    <Text style={styles.subtitle}>
+                        Please review the details below and choose to accept or reject the request.
+                    </Text>
+                    <HorizontalLine color={colors.tertiary} />
+                    {requests.map((request) => {
+                        if (request.post.status === "Available" && request.post.userId === user._id)
+                            return (
+                                <RequestCard
+                                    key={request.post._id}
+                                    name={request.from.firstName + " " + request.from.lastName}
+                                    source={require("../assets/boyPic.png")}
+                                    to={request.post.to}
+                                    from={request.post.from}
+                                    persons={request.seats}
+                                    accept={() => handleAccept(request.post._id)}
+                                    reject={() => handleReject()}
+                                />);
+                    })}
+                </ScrollView>
+            )}
         </View>
     );
 };
@@ -94,7 +98,8 @@ const RequestManagementScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingTop: 50,
         paddingHorizontal: 15,
     },

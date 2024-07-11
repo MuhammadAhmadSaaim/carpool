@@ -9,7 +9,7 @@ import DriverCard from "../components/DriverCard";
 import { useAuth } from "../screens/authentication/authToken";
 
 export default function SearchRideScreen() {
-    const { token } = useAuth();
+    const { token, savePostID } = useAuth();
     const [rides, setRides] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedRide, setSelectedRide] = useState(null); // State to track selected ride
@@ -34,12 +34,11 @@ export default function SearchRideScreen() {
                 setLoading(false);
             } else {
                 setLoading(false);
-                Alert.alert('Error', 'An error occurred while fetching rides. Please try again later.');
                 // Handle error state
             }
         } catch (error) {
             Alert.alert('Error', 'An error occurred while fetching rides. Please try again later.');
-            // Handle error state
+
         }
     };
 
@@ -68,6 +67,9 @@ export default function SearchRideScreen() {
                 }),
             });
             if (response.ok) {
+                // Save the post ID to the auth context
+                console.log("Requested Post ID", selectedRide._id);
+                savePostID(selectedRide._id);
                 Alert.alert('Success', 'Your request has been sent successfully.');
                 closeModal();
             } else {
@@ -75,7 +77,7 @@ export default function SearchRideScreen() {
                 // Handle error state
             }
         } catch (error) {
-            Alert.alert('Error', error);
+            Alert.alert('Error', error.message);
             // Handle error state
         }
     }

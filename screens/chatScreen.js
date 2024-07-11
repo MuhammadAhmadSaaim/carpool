@@ -1,61 +1,78 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { GiftedChat, Bubble, Time, InputToolbar, Send } from 'react-native-gifted-chat';
-import { Appbar, TextInput, Card } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from "../utils/colors";
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from "../screens/authentication/authToken";
 
 const ChatScreen = () => {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
-
+    const { token, threadID } = useAuth();
     const navigation = useNavigation();
 
     useEffect(() => {
-        setMessages([
-            {
-                _id: 1,
-                text: 'Hello developer',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                },
-            },
-            {
-                _id: 2,
-                text: 'Hi React Native, how can you assist me today?',
-                createdAt: new Date(),
-                user: {
-                    _id: 1,
-                    name: 'Developer',
-                },
-            },
-            {
-                _id: 3,
-                text: 'I can help you with your development questions. Feel free to ask me anything.',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                },
-            },
-            {
-                _id: 4,
-                text: 'Great! I have a question about state management.',
-                createdAt: new Date(),
-                user: {
-                    _id: 1,
-                    name: 'Developer',
-                },
-            },
-        ]);
+        fetchMessageLists();
     }, []);
 
     const onSend = useCallback((messages = []) => {
         setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
     }, []);
+
+    const fetchMessageLists = async () => {
+        try {
+            const response = await fetch(`https://carpool.qwertyexperts.com/api/message/list/${threadID}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const messages = data.result.data.map(msg => ({
+                    _id: msg._id,
+                    text: msg.message,
+                    createdAt: new Date(msg.createdAt),
+                    user: {
+                        _id: msg.userFrom._id,
+                        name: `${msg.userFrom.firstName} ${msg.userFrom.lastName}`,
+                        avatar: msg.userFrom.profilePicture,
+                    },
+                }));
+                setMessages(messages);
+            } else {
+                Alert.alert('Error', 'An error occurred while fetching messages. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Error fetching messages', error);
+            Alert.alert('Error', error.message);
+        }
+    };
+
+    const postMessage = async () => {
+        try {
+            const response = await fetch('https://carpool.qwertyexperts.com/api/message/', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ thread: threadID, message: inputText }),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                fetchMessageLists();
+            } else {
+                console.error('Error posting message');
+            }
+        } catch (error) {
+            console.error('Error posting message', error);
+            Alert.alert('Error', error.message);
+        }
+    };
 
     const renderBubble = (props) => {
         return (
@@ -63,18 +80,18 @@ const ChatScreen = () => {
                 {...props}
                 textStyle={{
                     left: {
-                        color: 'white',
+                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
                     },
                     right: {
-                        color: 'white',
+                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
                     },
                 }}
                 wrapperStyle={{
                     left: {
-                        backgroundColor: colors.primary,
+                        backgroundColor: props.currentMessage.user._id === props.user._id ? colors.tertiary : colors.tertiary,
                     },
                     right: {
-                        backgroundColor: colors.tertiary,
+                        backgroundColor: props.currentMessage.user._id === props.user._id ? colors.primary : colors.tertiary,
                     },
                 }}
             />
@@ -87,10 +104,10 @@ const ChatScreen = () => {
                 {...props}
                 timeTextStyle={{
                     left: {
-                        color: 'white',
+                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
                     },
                     right: {
-                        color: 'white',
+                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
                     },
                 }}
             />
@@ -128,7 +145,7 @@ const ChatScreen = () => {
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={{
-                    _id: 1,
+                    _id: '668bc1d5bccdb7c68517ad95', // Replace with logged-in user's _id
                 }}
                 renderAvatar={null}
                 renderUsernameOnMessage={false}
