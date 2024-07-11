@@ -9,16 +9,17 @@ import { useAuth } from "../screens/authentication/authToken";
 
 const ChatScreen = () => {
     const [messages, setMessages] = useState([]);
-    const [inputText, setInputText] = useState('');
-    const { token, threadID } = useAuth();
+
+    const { user, token, threadID } = useAuth();
     const navigation = useNavigation();
 
     useEffect(() => {
         fetchMessageLists();
-    }, []);
+    }, [messages]);
 
     const onSend = useCallback((messages = []) => {
         setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
+        postMessage(messages);
     }, []);
 
     const fetchMessageLists = async () => {
@@ -51,15 +52,16 @@ const ChatScreen = () => {
         }
     };
 
-    const postMessage = async () => {
+    const postMessage = async (newMessages) => {
         try {
+            const message = newMessages[0]; // Take the first message from the array
             const response = await fetch('https://carpool.qwertyexperts.com/api/message/', {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ thread: threadID, message: inputText }),
+                body: JSON.stringify({ thread: threadID, message: message.text }),
             });
             const data = await response.json();
             console.log(data);
@@ -80,18 +82,18 @@ const ChatScreen = () => {
                 {...props}
                 textStyle={{
                     left: {
-                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
+                        color: 'white',
                     },
                     right: {
-                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
+                        color: 'white',
                     },
                 }}
                 wrapperStyle={{
                     left: {
-                        backgroundColor: props.currentMessage.user._id === props.user._id ? colors.tertiary : colors.tertiary,
+                        backgroundColor: colors.tertiary,
                     },
                     right: {
-                        backgroundColor: props.currentMessage.user._id === props.user._id ? colors.primary : colors.tertiary,
+                        backgroundColor: colors.primary,
                     },
                 }}
             />
@@ -104,10 +106,10 @@ const ChatScreen = () => {
                 {...props}
                 timeTextStyle={{
                     left: {
-                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
+                        color: 'white',
                     },
                     right: {
-                        color: props.currentMessage.user._id === props.user._id ? 'white' : 'white',
+                        color: 'white',
                     },
                 }}
             />
@@ -145,7 +147,7 @@ const ChatScreen = () => {
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={{
-                    _id: '668bc1d5bccdb7c68517ad95', // Replace with logged-in user's _id
+                    _id: user._id, // Replace hardcoded ID with user._id
                 }}
                 renderAvatar={null}
                 renderUsernameOnMessage={false}

@@ -9,7 +9,7 @@ import DriverCard from "../components/DriverCard";
 import { useAuth } from "../screens/authentication/authToken";
 
 export default function SearchRideScreen() {
-    const { token, savePostID } = useAuth();
+    const { user, token, savePostID } = useAuth();
     const [rides, setRides] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedRide, setSelectedRide] = useState(null); // State to track selected ride
@@ -118,21 +118,24 @@ export default function SearchRideScreen() {
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
                         rides.map((element) => {
-                            return (
-                                <DriverCard
-                                    key={element._id}
-                                    name={element.userId.firstName + " " + element.userId.lastName}
-                                    from={element.from}
-                                    to={element.to}
-                                    vehicleType={element.vehicleType.toLowerCase()}
-                                    departureTime={element.departuteTime}
-                                    arrivalTime={element.arrivalTime}
-                                    totalSeats={element.totalSeats}
-                                    availableSeats={element.availableSeats}
-                                    status={element.status}
-                                    onPress={() => handleCardPress(element)}
-                                />
-                            );
+                            console.log("HELOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", element.userId._id, user._id);
+                            if (element.userId._id != user._id) {
+                                return (
+                                    <DriverCard
+                                        key={element._id}
+                                        name={element.userId.firstName + " " + element.userId.lastName}
+                                        from={element.from}
+                                        to={element.to}
+                                        vehicleType={element.vehicleType.toLowerCase()}
+                                        departureTime={element.departuteTime}
+                                        arrivalTime={element.arrivalTime}
+                                        totalSeats={element.totalSeats}
+                                        availableSeats={element.availableSeats}
+                                        status={element.status}
+                                        onPress={() => handleCardPress(element)}
+                                    />
+                                );
+                            }
                         })
                     )}
                 </View>
